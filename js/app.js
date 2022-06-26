@@ -3,43 +3,35 @@ var app = new Vue({
   el: '#app',
   data: {
     btnMsg: '録音する',
-    recording: false,
+    hideBtn: false,
+    isRecording: false,
     recorder: null,
     audioData: [],
     audioUrl: null,
   },
   methods: {
-    startRecording: function () {
-      this.switchRecordingState();
+    startRecording: async function () {
+      this.isRecording = !this.isRecording;
+      this.btnMsg = '録音中'
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: true
+      });
+      await this.launchRecordingSystem(stream)
+      await this.recorder.start();
+      this.audioData = [];
     },
-    switchRecordingState: function () {
-      this.recording = !this.recording;
-      if (this.recording) {
-        this.btnMsg = '録音中'
-        this.recorder.start();
-        this.audioData = [];
-
-      } else {
+    stopRecording: async function () {
+      this.hideBtn = true;
+      setTimeout(() => {
+        this.isRecording = !this.isRecording;
         this.btnMsg = '録音する'
-        this.status = 'ready';
+        stream.getTracks()[0].stop();
         this.recorder.stop();
-      }
+        this.hideBtn = false;
+      }, 600);
     },
-  },
-  mounted() {
-    async function runRecordingSystem() {
-      try {
-        return navigator.mediaDevices.getUserMedia({
-          audio: true
-        })
-      } catch (e) {
-        throw "reject"
-      }
-    }
-    launchRecordingSystem = async () => {
-      stream = await runRecordingSystem();
+    launchRecordingSystem: async function (stream) {
       this.recorder = new MediaRecorder(stream);
-
       this.recorder.addEventListener('dataavailable', e => {
         this.audioData.push(e.data);
       });
@@ -49,8 +41,6 @@ var app = new Vue({
         const url = URL.createObjectURL(audioBlob);
         this.audioUrl = url;
       });
-
-    };
-    launchRecordingSystem();
-  }
+    }
+  },
 })

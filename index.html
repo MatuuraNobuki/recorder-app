@@ -19,7 +19,9 @@
       <p>audioタグサポートのブラウザをご使用下さい。</p>
     </audio>
     <!-- {{ message }} -->
-    <button @click="startRecording">{{ btnMsg }}</button>
+    <button v-if="!isRecording && !hideBtn" @click="startRecording">{{ btnMsg }}</button>
+    <button v-if="isRecording && !hideBtn" @click="stopRecording">{{ btnMsg }}</button>
+    <button v-if="hideBtn" disabled>{{ btnMsg }}</button>
   </div>
   <footer>
     <small>Copyright &copy;matsuuranobuki,all rights reserved.</small>
