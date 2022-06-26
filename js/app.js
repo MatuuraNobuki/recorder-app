@@ -4,11 +4,9 @@ var app = new Vue({
   data: {
     btnMsg: '録音する',
     recording: false,
-    recordingStatus: 'init',
     recorder: null,
     audioData: [],
     audioUrl: null,
-    audioExtension: ''
   },
   methods: {
     startRecording: function () {
@@ -18,7 +16,6 @@ var app = new Vue({
       this.recording = !this.recording;
       if (this.recording) {
         this.btnMsg = '録音中'
-        this.status = 'recording';
         this.recorder.start();
         this.audioData = [];
 
@@ -28,23 +25,23 @@ var app = new Vue({
         this.recorder.stop();
       }
     },
-    getExtension: function (audioType) {
-      let extension = 'wav';
-      // const matches = audioType.match(/audio\/([^;]+)/);
-      // if (matches) {
-      //   extension = matches[1];
-      // }
-      return '.' + extension;
-    }
   },
   mounted() {
-    navigator.mediaDevices.getUserMedia({
-      audio: true
-    }).then(stream => {
+    async function runRecordingSystem() {
+      try {
+        return navigator.mediaDevices.getUserMedia({
+          audio: true
+        })
+      } catch (e) {
+        throw "reject"
+      }
+    }
+    launchRecordingSystem = async () => {
+      stream = await runRecordingSystem();
       this.recorder = new MediaRecorder(stream);
+
       this.recorder.addEventListener('dataavailable', e => {
         this.audioData.push(e.data);
-        this.audioExtension = this.getExtension(e.data.type);
       });
 
       this.recorder.addEventListener('stop', () => {
@@ -52,7 +49,8 @@ var app = new Vue({
         const url = URL.createObjectURL(audioBlob);
         this.audioUrl = url;
       });
-      this.status = 'ready';
-    });
+
+    };
+    launchRecordingSystem();
   }
 })
