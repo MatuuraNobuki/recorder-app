@@ -12,16 +12,20 @@
 
 <body>
   <header>
-    <h1>title</h1>
+    <h1><i class="bi bi-mic"></i>ボイスレコーダー</h1>
   </header>
   <div id="app">
-    <audio v-if="audioUrl" :src="audioUrl" controls>
-      <p>audioタグサポートのブラウザをご使用下さい。</p>
-    </audio>
-    <!-- {{ message }} -->
-    <button v-if="!isRecording && !hideBtn" @click="startRecording">{{ btnMsg }}</button>
-    <button v-if="isRecording && !hideBtn" @click="stopRecording">{{ btnMsg }}</button>
-    <button v-if="hideBtn" disabled>{{ btnMsg }}</button>
+    <div id="preview">
+      <input v-if="transcript" type="text" v-model="transcript">
+      <audio v-if="audioUrl" :src="audioUrl" controls>
+        <p>audioタグサポートのブラウザをご使用下さい。</p>
+      </audio>
+    </div>
+    <div class="wrap">
+      <button @click="switchRecordingState" :disabled="hideBtn">
+        <div><i v-if!="btnMsg" class="bi bi-circle-fill"></i>{{ btnMsg }}</div>
+      </button>
+    </div>
   </div>
   <footer>
     <small>Copyright &copy;matsuuranobuki,all rights reserved.</small>

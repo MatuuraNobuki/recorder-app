@@ -2,45 +2,103 @@ Vue.config.devtools = true;
 var app = new Vue({
   el: '#app',
   data: {
-    btnMsg: '録音する',
+    btnMsg: '',
     hideBtn: false,
     isRecording: false,
     recorder: null,
+    stream: null,
     audioData: [],
     audioUrl: null,
+    speech: null,
+    interimTranscript: '',
+    finalTranscript: '',
+    transcript: '',
+    recognition: '',
+    ActivateBtn: true,
   },
   methods: {
-    startRecording: async function () {
+    switchRecordingState: function () {
       this.isRecording = !this.isRecording;
+      if (this.isRecording) {
+        this.startRecording();
+      } else {
+        this.stopRecording();
+      }
+    },
+
+    startRecording: async function () {
+      await this.operateRecordingSystem();
+      this.hideBtn = true;
+      this.transcription();
+      setTimeout(() => {
+        this.hideBtn = false;
+      }, 600);
+      this.recognition.start();
       this.btnMsg = '録音中'
-      stream = await navigator.mediaDevices.getUserMedia({
-        audio: true
-      });
-      await this.launchRecordingSystem(stream)
-      await this.recorder.start();
+
+      this.recorder.start();
       this.audioData = [];
     },
-    stopRecording: async function () {
+
+    stopRecording: function () {
+      this.transcription();
+      this.recognition.stop();
+      this.btnMsg = '録音する'
       this.hideBtn = true;
+      this.recorder.stop();
       setTimeout(() => {
-        this.isRecording = !this.isRecording;
-        this.btnMsg = '録音する'
-        stream.getTracks()[0].stop();
-        this.recorder.stop();
+        this.stream.getTracks()[0].stop();
         this.hideBtn = false;
       }, 600);
     },
-    launchRecordingSystem: async function (stream) {
-      this.recorder = new MediaRecorder(stream);
-      this.recorder.addEventListener('dataavailable', e => {
-        this.audioData.push(e.data);
-      });
 
-      this.recorder.addEventListener('stop', () => {
-        const audioBlob = new Blob(this.audioData);
-        const url = URL.createObjectURL(audioBlob);
-        this.audioUrl = url;
+    operateRecordingSystem: async function () {
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        audio: true
       });
+      this.recorder = new MediaRecorder(this.stream);
+
+      this.recorder.ondataavailable = e => {
+        this.audioData.push(e.data);
+      };
+
+      this.recorder.onstop = () => {
+        this.buildAudioURL();
+      };
+    },
+
+    buildAudioURL: function () {
+      const audioBlob = new Blob(this.audioData);
+      const url = URL.createObjectURL(audioBlob);
+      this.audioUrl = url;
+    },
+
+    transcription: function () {
+      this.recognition.onresult = (e) => {
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          let transcript = e.results[i][0].transcript;
+          if (e.results[i].isFinal) {
+            this.finalTranscript += transcript;
+            this.interimTranscript = '';
+          } else {
+            this.interimTranscript = transcript;
+          }
+        }
+        this.transcript = this.finalTranscript + this.interimTranscript;
+      }
     }
   },
+  mounted() {
+    var userAgent = window.navigator.userAgent.toLowerCase();
+    // if (userAgent.indexOf('chrome') == -1) {
+    //   alert('このアプリはchrome以外では正常に動作しない可能性があります。ブラウザをchromeに切り替えてください。')
+    // }
+
+    SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    this.recognition = new SpeechRecognition();
+    this.recognition.lang = 'ja-JP';
+    this.recognition.interimResults = true;
+    this.recognition.continuous = true;
+  }
+
 })
