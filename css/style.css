@@ -1,4 +1,5 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css");
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400&display=swap');
 
 /*------------------------------
  ▼共通デザイン（モバイル向け）
@@ -23,12 +24,16 @@ i {
   margin: 1%;
 }
 
+a {
+  color: white;
+}
+
 h1 {
   font-weight: normal;
   margin: 0;
   font-size: 1em;
-  padding: 2% 5%;
-  background-color: #555;
+  padding: 1% 5%;
+  background-color: #222;
 }
 
 header {
@@ -37,26 +42,82 @@ header {
 }
 
 #app {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-size: 2em;
+  position: absolute;
+  top: 5%;
+  bottom: 0;
+  left: 0;
+  right: 0;
   margin: 0;
   height: 90%;
   display: grid;
-  grid-template: 5fr 1fr / 1fr 1fr 1fr;
+  grid-template: 2em 5fr 1fr / 1fr 1fr 1fr;
+}
+
+#audioTitle {
+  padding: 0 10%;
+  font-size: 3rem;
+  grid-column: span 3;
+}
+
+#explanation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-row: 2;
+  grid-column: span 3;
+  transition: all 300ms 0s ease;
+}
+
+#content-wrap {
+  grid-row: 2;
+  grid-column: span 3;
+  position: relative;
+  display: grid;
+  grid-template-rows: repeat(4, 25%);
+
 }
 
 #preview {
-  grid-row: 1;
-  grid-column: span 3;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 2%;
+  padding: 0 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 300ms 0s ease;
+
 }
+
+.card {
+  border-radius: 2em;
+  background-color: #3d3c44;
+}
+
+.spread {
+  bottom: 0;
+  height: 95%;
+}
+
+.narrowed {
+  top: 2%;
+  height: 0;
+}
+
+
 
 .wrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  grid-row: 2;
+  grid-row: 3;
   grid-column: 2;
 }
 
-button {
+.wrap button {
   border: none;
   width: 25vw;
   height: 25vw;
@@ -68,6 +129,14 @@ button {
   cursor: pointer;
   background: #dd5555;
   font-size: 100%;
+  transition: all 300ms 0s ease;
+}
+
+
+
+
+button i.bi {
+  transition: all 300ms 0s ease;
 }
 
 button div {
@@ -81,7 +150,52 @@ button div {
 }
 
 button div i {
-  font-size: 200%;
+  font-size: 1.5em;
+}
+
+#time {
+  margin: 0 1em;
+}
+
+#current,
+#duration {
+  padding: 0;
+  margin: .2em;
+}
+
+#playerbox {
+  margin: 0 auto;
+  width: 80vw;
+}
+
+#player {
+  display: grid;
+  grid-template: 1fr 1fr 1fr/ 3fr 1fr;
+
+}
+
+#seekbar {
+  width: 100%;
+  height: 1rem;
+  border-radius: 10px;
+  background: linear-gradient(#ccc, #ccc) no-repeat #49444c;
+  grid-row: 3;
+  grid-column: 1 / 3;
+}
+
+#time {
+  grid-row: 2;
+  grid-column: 1/3;
+  font-size: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+
+#title {
+  grid-row: 1;
+  grid-column: 1;
 }
 
 footer {
@@ -91,6 +205,11 @@ footer {
   bottom: 0;
   text-align: center;
 }
+
+/*-------------------------------------
+ ▼中型画面向けデザイン（タブレットなど）
+ --------------------------------------*/
+@media screen and (min-width: 768px) {}
 
 /*-------------------------------
  ▼大型画面向けデザイン（PCなど）
