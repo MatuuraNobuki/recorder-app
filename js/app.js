@@ -2,7 +2,6 @@ Vue.config.devtools = true;
 var app = new Vue({
   el: '#app',
   data: {
-    btnMsg: '',
     hideBtn: false,
     isRecording: false,
     recorder: null,
@@ -22,6 +21,7 @@ var app = new Vue({
     showplayer: false,
     dateTime: '',
     isPlayingAudio: false,
+    detailCard: false,
   },
   methods: {
 
@@ -44,7 +44,6 @@ var app = new Vue({
         this.hideBtn = false;
       }, 600);
       this.recognition.start();
-      this.btnMsg = ''
       this.showplayer = false;
       this.recorder.start();
       this.audioData = [];
@@ -54,7 +53,6 @@ var app = new Vue({
     stopRecording: function () {
       this.transcription();
       this.recognition.stop();
-      this.btnMsg = ''
       this.hideBtn = true;
       this.radius = 50;
       this.recorder.stop();
@@ -63,7 +61,6 @@ var app = new Vue({
         this.hideBtn = false;
       }, 600);
     },
-
     operateRecordingSystem: async function () {
       this.stream = await navigator.mediaDevices.getUserMedia({
         audio: true
@@ -78,6 +75,7 @@ var app = new Vue({
         this.buildAudioURL();
       };
     },
+
 
     buildAudioURL: function () {
       const audioBlob = new Blob(this.audioData);
@@ -111,17 +109,17 @@ var app = new Vue({
       }
     },
     controllAudio: function () {
-      this.isPlayingAudio = !this.isPlayingAudio;
       if (this.isPlayingAudio) {
+        this.isPlayingAudio = !this.isPlayingAudio;
         this.audio.pause();
       } else {
+        this.isPlayingAudio = !this.isPlayingAudio;
         this.audio.play();
       }
     },
     getDuration: function () {
       this.audio.currentTime = 0
       this.audio.removeEventListener('timeupdate', this.getDuration)
-      console.log(this.audio.duration)
     },
     playTime: function (t) {
       let hms = ''
@@ -141,12 +139,15 @@ var app = new Vue({
       }
       return hms
     },
+    spreadPlayer: function () {
+      this.detailCard = !this.detailCard;
+    }
   },
   mounted() {
     var userAgent = window.navigator.userAgent.toLowerCase();
-    // if (userAgent.indexOf('chrome') == -1) {
-    //   alert('このアプリはchrome以外では正常に動作しない可能性があります。ブラウザをchromeに切り替えてください。')
-    // }
+    if (userAgent.indexOf('chrome') == -1) {
+      alert('このアプリはchrome以外では正常に動作しない可能性があります。ブラウザをchromeに切り替えてください。')
+    }
 
     SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     this.recognition = new SpeechRecognition();
@@ -166,15 +167,18 @@ var app = new Vue({
 
 
     this.audio.addEventListener("timeupdate", (e) => {
-      const current = Math.floor(this.audio.currentTime);
+      let current = Math.floor(this.audio.currentTime);
       const duration = Math.round(this.audio.duration);
       if (duration != Infinity && !isNaN(duration)) {
-        if (current == 0) {
+        if (current == 0 && this.isRecording == false) {
           this.showplayer = true;
         }
-        this.current = this.playTime(current);
         this.duration = this.playTime(duration);
-        const percent = Math.round((this.audio.currentTime / this.audio.duration) * 1000) / 10;
+        let percent = Math.round((this.audio.currentTime / this.audio.duration) * 1000) / 10;
+        if (percent >= 100) {
+          this.controllAudio();
+        }
+        this.current = this.playTime(current);
         document.getElementById('seekbar').style.backgroundSize = percent + '%';
       }
     })

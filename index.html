@@ -15,37 +15,47 @@
   <div id="app">
     <div id="audioTitle" v-if="isRecording">{{ dateTime }}</div>
     <div id="content-wrap">
-      <div id="explanation" v-if="!isRecording && !audioUrl" :class="{'spread': !isRecording,'narrowed':isRecording}">
+      <div id="explanation" v-if="!isRecording && !audioUrl">
         ボタンをタップして<br>録音を開始しましょう
       </div>
       <audio :src="audioUrl" controls="controls" id="audioPlayer" hidden>
         <p>audioタグサポートのブラウザをご使用下さい。</p>
       </audio>
-      <div id="playerbox" class="card">
-        <i class="bi bi-arrow-repeat" v-if="!showplayer && audioUrl && !isRecording"></i>
+      <div id="playerbox" class="card" :class="{'maximumSpread': detailCard ,'spread': !isRecording && !detailCard ,'narrowed': !audioUrl || isRecording }">
+        <i class=" bi bi-arrow-repeat" v-if="!showplayer && audioUrl && !isRecording"></i>
         <!-- v-if="!showplayer && audioUrl && !isRecording" -->
-        <div id="player" v-show="showplayer" :class="{'spread': !isRecording }">
-          <div id="title">{{ dateTime }}</div>
-          <button @click="controllAudio">Pause</button>
+        <div id="player" v-show="showplayer">
+          <div id="caption" @click="spreadPlayer">
+            <div id="property">{{ dateTime }}</div>
+            <div id="title" :class="{'minimum': !detailCard}">
+              {{ finalTranscript }}
+            </div>
+          </div>
           <div id="time">
             <span id="current">{{ current }}</span>
             <span id="duration">{{ duration }}</span>
           </div>
           <div id="seekbar"></div>
-          <a :href="audioUrl" :download="Math.floor(Date.now() / 1000) + finalTranscript + '.wav'">
-            <i class="bi bi-download"></i>
-          </a>
+          <div id="buttons">
+            <button class="btn-default btn playBtn" @click="controllAudio">
+              <i class="bi" :class="{'bi-caret-right-fill':!isPlayingAudio,'bi-pause-fill':isPlayingAudio }"></i>
+            </button>
+            <a :href="audioUrl" class="btn downloadButton" :download="Math.floor(Date.now() / 1000) + finalTranscript + '.wav'">
+              <i class="bi bi-download"></i>
+            </a>
+          </div>
         </div>
       </div>
-      <div id="preview" class="card" :class="{'spread': isRecording || audioUrl,'narrowed':!isRecording}">
-        <div v-if="isRecording">
+      <div id="preview" class="card" :class="{'maximumSpread': isRecording || audioUrl,'narrowed':!isRecording}">
+        <div v-if="isRecording" id="transcription">
           {{finalTranscript }}<i style="color:rgb(5, 242, 139);">{{ interimTranscript }}</i>
         </div>
       </div>
     </div>
+    <div v-show="isRecording" id="state">録音中…</div>
     <div class="wrap">
-      <button @click="switchRecordingState" :disabled="hideBtn" :style="{'border-radius': `${radius}%`}">
-        <div><i class="bi" :class="{'bi-circle-fill': !isRecording,'bi-pause-fill':isRecording}"></i>{{ btnMsg }}</div>
+      <button @click="switchRecordingState" :disabled="hideBtn" :style="{'border-radius': `${radius}%`}" class="btn-default">
+        <div><i class="bi" :class="{'bi-circle-fill': !isRecording,'bi-square-fill':isRecording}"></i></div>
       </button>
     </div>
   </div>
