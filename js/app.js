@@ -35,6 +35,7 @@ var app = new Vue({
     },
 
     startRecording: async function () {
+      this.detailCard = false;
       this.finalTranscript = '';
       await this.operateRecordingSystem();
       this.hideBtn = true;

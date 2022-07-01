@@ -9,7 +9,7 @@ body {
   width: 100vw;
   background-color: #2e2d33;
   color: white;
-  font-size: 30px;
+  font-size: 15px;
   height: 100vh;
   position: relative;
   font-family: "Helvetica Neue",
@@ -43,7 +43,7 @@ header {
 
 #app {
   font-family: 'M PLUS Rounded 1c', sans-serif;
-  font-size: 2em;
+  font-size: 1em;
   position: absolute;
   top: 5%;
   bottom: 0;
@@ -57,7 +57,8 @@ header {
 
 #audioTitle {
   padding: 0 10%;
-  font-size: 3rem;
+  font-size: 1rem;
+  grid-row: 1;
   grid-column: span 3;
 }
 
@@ -91,10 +92,11 @@ header {
 
 #transcription {
   width: 100%;
+  font-size: 1.5rem
 }
 
 .minimum {
-  width: 80vw;
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -105,7 +107,7 @@ header {
   left: 0;
   right: 0;
   top: 0;
-  border-radius: 3rem;
+  border-radius: 1rem;
   background-color: #3d3c44;
   margin: 0 2%;
   padding: 5% 5%;
@@ -117,7 +119,7 @@ header {
 }
 
 .spread {
-  height: 25%;
+  height: 50vw;
 }
 
 .narrowed {
@@ -160,7 +162,6 @@ header {
 }
 
 #playerbox {
-  /* text-align: center; */
   position: relative;
 }
 
@@ -200,47 +201,56 @@ button div i {
 
 #player {
   display: grid;
-  grid-template: repeat(4, 1fr)/ 3fr 1fr;
+  grid-template-rows: 10% 50% 1fr 2% 20%;
+  grid-template-columns: 1fr;
   height: 100%;
 
 }
 
 #seekbar {
   width: 100%;
-  height: 1rem;
   border-radius: 10px;
   background: linear-gradient(#ccc, #ccc) no-repeat #49444c;
   grid-row: 4;
-  grid-column: 1 / 3;
+  grid-column: 1;
 }
 
 #time {
   margin: 0 1em;
   grid-row: 3;
-  grid-column: 1/3;
-  font-size: 2rem;
+  font-size: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
 }
 
-#title {
+.title {
   grid-row: 2;
-  grid-column: 1/3;
-  font-size: 3rem;
+  grid-column: 1;
+  font-size: 1.5rem;
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  color: #fff;
+
+}
+
+textarea {
+  resize: none;
+  width: 100%;
+  height: 100%;
 }
 
 #property {
   grid-row: 1;
   grid-column: 1;
-  font-size: 2rem;
+  font-size: 1rem;
 }
 
 
 #buttons {
   height: 100%;
-  grid-row: 4;
-  grid-column: 1/3;
+  grid-row: 5;
+  grid-column: 1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   padding-top: 0.5em
@@ -253,7 +263,7 @@ button div i {
 }
 
 .btn i {
-  font-size: 3rem;
+  font-size: 1rem;
   color: #FFF;
 }
 
@@ -276,18 +286,113 @@ footer {
 /*-------------------------------------
  ▼中型画面向けデザイン（タブレットなど）
  --------------------------------------*/
-@media screen and (min-width: 768px) {}
+@media screen and (min-width: 600px) {
+
+
+  body {
+    font-size: 1rem;
+  }
+
+  #app {
+    top: 3rem;
+    grid-template-rows: 1fr 5fr 10rem;
+    grid-template-columns: 1fr 10rem;
+    font-size: 1rem;
+  }
+
+  .wrap {
+    grid-row: 3;
+    grid-column: 2;
+  }
+
+  .wrap button {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .wrap button i {
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  .card {
+    /* padding: 2%; */
+    border-radius: 1rem;
+  }
+
+  #playerbox {
+    grid-row: 1;
+    /* padding: 1rem; */
+    /* margin: 1rem; */
+    grid-column: 1;
+  }
+
+  #audioTitle {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+
+  }
+
+
+  #state {
+    grid-row: 3;
+    grid-column: 1;
+    text-align: right;
+  }
+
+  #property {
+    font-size: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  #time {
+    font-size: 1rem;
+  }
+
+  #caption:hover {
+    cursor: pointer;
+  }
+
+  #seekbar {
+    cursor: pointer;
+  }
+
+  #buttons {}
+
+  .btn i {
+    font-size: 1rem;
+  }
+
+  .spread {
+    height: 30vh;
+  }
+
+  .maximumSpread {
+    height: 70%;
+  }
+
+  .narrowed {
+    margin: 0;
+    padding: 0;
+    height: 0;
+  }
+
+}
 
 /*-------------------------------
  ▼大型画面向けデザイン（PCなど）
  --------------------------------*/
 @media screen and (min-width: 1024px) {
   body {
-    width: 80%;
+    width: 100vw;
   }
 
   #app {
-    grid-template: 100% / 10% 90%;
+    width: 800px;
+    margin: 0 auto;
   }
-
 }

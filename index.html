@@ -3,9 +3,10 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>仮タイトル</title>
+  <title>ボイスレコーダーアプリ</title>
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
@@ -21,16 +22,17 @@
       <audio :src="audioUrl" controls="controls" id="audioPlayer" hidden>
         <p>audioタグサポートのブラウザをご使用下さい。</p>
       </audio>
-      <div id="playerbox" class="card" :class="{'maximumSpread': detailCard ,'spread': !isRecording && !detailCard ,'narrowed': !audioUrl || isRecording }">
+      <div id="playerbox" class="card" :class="{'maximumSpread': detailCard ,'spread': !isRecording && !detailCard && audioUrl,'narrowed': !audioUrl || isRecording }">
         <i class=" bi bi-arrow-repeat" v-if="!showplayer && audioUrl && !isRecording"></i>
         <!-- v-if="!showplayer && audioUrl && !isRecording" -->
         <div id="player" v-show="showplayer">
           <div id="caption" @click="spreadPlayer">
             <div id="property">{{ dateTime }}</div>
-            <div id="title" :class="{'minimum': !detailCard}">
+            <div class="title" :class="{'minimum': !detailCard}" v-if="!detailCard">
               {{ finalTranscript }}
             </div>
           </div>
+          <textarea class="title" v-if="detailCard" v-model="finalTranscript"></textarea>
           <div id="time">
             <span id="current">{{ current }}</span>
             <span id="duration">{{ duration }}</span>
@@ -55,7 +57,7 @@
     <div v-show="isRecording" id="state">録音中…</div>
     <div class="wrap">
       <button @click="switchRecordingState" :disabled="hideBtn" :style="{'border-radius': `${radius}%`}" class="btn-default">
-        <div><i class="bi" :class="{'bi-circle-fill': !isRecording,'bi-square-fill':isRecording}"></i></div>
+        <div><i class="bi recording-button" :class="{'bi-mic': !isRecording,'bi-square-fill':isRecording}"></i></div>
       </button>
     </div>
   </div>
